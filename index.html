@@ -3,22 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Repaso · 3.º DS</title>
+    <title>Portal Repaso · 3.º DS «B» HUB</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>Portal de Repaso 3.º DS</h1>
-        <p>Bienvenidos al HUB de conocimientos y módulos del año.</p>
+        <div class="wrap">
+            <span class="marca">INDEL · 3.º Desarrollo de Software «B»</span>
+            <h1>Portal HUB de Repaso Anual</h1>
+            <p class="lead">Resumen completo de módulos, herramientas, prácticas y evidencias del año.</p>
+        </div>
     </header>
-    <main>
+
+    <main class="wrap">
+        <section class="buscador-sec">
+            <input type="text" id="buscador" placeholder="Busca un módulo, herramienta o tema...">
+        </section>
+
         <section>
-            <h2>Módulos del Repaso</h2>
-            <div id="contenedor-modulos">
-                <!-- Aquí se cargarán los módulos dinámicamente -->
+            <h2>Módulos del Año</h2>
+            <div id="contenedor-modulos" class="grid-modulos">
+                <!-- Se inyecta dinámicamente desde data/modulos.js -->
             </div>
         </section>
     </main>
+
+    <footer>
+        <div class="wrap">
+            <p><b>Autor:</b> Axel Pineda · Instituto Nacional Cantón Lourdes (INDEL)</p>
+        </div>
+    </footer>
+
+    <script src="data/modulos.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
