@@ -37,26 +37,28 @@ const modulosData = [
         id: "3.4",
         titulo: "Módulo 3.4 · Documentación y Creación de Apps",
         docente: "Profesor Arcides Canales",
-        desc: "Desarrollo de software en Python, interfaces gráficas con Avalonia UI y Flet, integración con Odoo ERP, arquitectura por fases y la Práctica 11 (CRUD con SQLite y DataBinding en .NET MAUI).",
+        desc: "Desarrollo de software en Python, interfaces gráficas con Avalonia UI y Flet, integración con Odoo ERP, arquitectura por fases y ejecución de prácticas avanzadas en .NET MAUI.",
         investigacion: [
-            "DataBinding y DemoIntroAsync.",
-            "Aplicaciones TodoSuCarnet con CRUD en SQLite.",
-            "Integración de IA (Servidor MPC con Excalidraw y Spec-driven con OpenSpec)."
+            "Práctica 11 (Base de datos CRUD-IA): DataBinding y DemoIntroAsync (Individual).",
+            "Aplicación TodoSuCarnet con CRUD en SQLite.",
+            "Uso de IA: Servidor MPC con Excalidraw y Spec-driven development con OpenSpec.",
+            "Práctica 10 y guías de desarrollo con .NET MAUI y SQLite."
         ],
         herramientas: ["Python", "Avalonia UI", "Flet", "Odoo ERP", "Visual Studio Code", "IA de Visual Studio Code", ".NET MAUI", "SQLite"],
-        tags: ["#Python", "#Odoo", "#Avalonia", "#IA de VS Code", "#.NET MAUI", "#CRUD"]
+        tags: ["#Python", "#Odoo", "#CRUD-IA", "#Práctica 11", "#.NET MAUI", "#SQLite"]
     },
     {
         id: "3.8",
         titulo: "Módulo 3.8 · Proyecto Innovador de Desarrollo",
         docente: "Profesor Arcides Canales",
-        desc: "Ciclo completo de ingeniería de software: manuales de usuario/sistema, proyecto UNA ESTRELLA en .NET MAUI (pares, regresiva, multiplicaciones, sueldos, divisas), exposiciones, y puesta en marcha de tiendas con PrestaShop.",
+        desc: "Ciclo completo de ingeniería de software: manuales de usuario/sistema, metodología SCRUM, proyecto UNA ESTRELLA en .NET MAUI, exposiciones y tiendas virtuales.",
         investigacion: [
-            "Configuración completa de PrestaShop (temas, categorías, productos, cupones, descargas virtuales y pasarelas).",
-            "Desarrollo colaborativo SCRUM en GitHub con aplicaciones interconectadas por menú en .NET MAUI."
+            "Puesta en marcha de PrestaShop: temas, categorías, 5 productos por categoría, 4 Packs, cupones de descuento, descargas virtuales y marcas.",
+            "MatchGame (Investigación complementaria con figuras aleatorias, timer y reinicio).",
+            "Análisis de resultados y SCRUM (Equipos de 5): 6 aplicaciones en .NET MAUI (pares, cuenta regresiva, tablas de multiplicar, sueldos, tarifas de 'La langosta ahumada' y conversor de moneda mexicana)."
         ],
-        herramientas: ["Visual Studio Code", "IA de VS Code", "Git", "GitHub", "ASP.NET WebForms", ".NET MAUI", "PrestaShop"],
-        tags: ["#Proyecto Innovador", "#EXPOS", "#IA de VS Code", "#PrestaShop", "#.NET MAUI", "#GitHub"]
+        herramientas: ["Visual Studio Code", "IA de VS Code", "Git", "GitHub", "ASP.NET WebForms", ".NET MAUI", "PrestaShop", "XAMPP"],
+        tags: ["#Proyecto Innovador", "#PrestaShop", "#SCRUM", "#.NET MAUI", "#MatchGame", "#GitHub"]
     }
 ];
 
@@ -81,9 +83,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 <p style="color:var(--mut); font-size:14.5px; line-height:1.5;">${m.desc}</p>
                 
                 ${m.investigacion.length > 0 ? `
-                    <div class="sec-investigacion" style="background:var(--panel2); padding:10px; border-radius:8px; border:1px solid var(--line);">
-                        <h4 style="font-size:13px; color:var(--gr); margin-bottom:5px;">📋 Puntos Clave / Prácticas:</h4>
-                        <ul style="font-size:12.5px; color:var(--mut); padding-left:18px;">
+                    <div class="sec-investigacion" style="background:var(--panel2); padding:12px; border-radius:8px; border:1px solid var(--line);">
+                        <h4 style="font-size:13px; color:var(--gr); margin-bottom:6px;">📋 Prácticas y Contenido Detallado:</h4>
+                        <ul style="font-size:12.5px; color:var(--mut); padding-left:18px; display:flex; flex-direction:column; gap:4px;">
                             ${m.investigacion.map(item => `<li>${item}</li>`).join('')}
                         </ul>
                     </div>
