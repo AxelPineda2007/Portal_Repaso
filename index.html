@@ -94,7 +94,7 @@
     </footer>
 
     <script>
-       const modulosData = [
+   const modulosData = [
     {
         id: "3.0",
         titulo: "Módulo 3.0 · Orientación y Equipos",
@@ -155,12 +155,94 @@
         ],
         herramientas: ["Visual Studio Code", "IA de VS Code", "Git", "GitHub", "ASP.NET WebForms", ".NET MAUI", "PrestaShop", "XAMPP"],
         tags: ["#Proyecto Innovador", "#PrestaShop", "#SCRUM", "#.NET MAUI", "#MatchGame", "#GitHub"]
+    },
+    {
+        id: "3.9",
+        titulo: "Módulo 3.9 · Integración y Feria de Portales",
+        docente: "Profesor Arcides Canales y Javier Mineros",
+        desc: "Módulo integrador enfocado en la consolidación del Portal HUB de Repaso Anual, empaquetado de versiones (v0.2 a v1.0), despliegue en GitHub Pages y defensa individual.",
+        investigacion: [
+            "Estructuración de componentes web reutilizables (HTML5, CSS Grid/Flexbox y JavaScript nativo sin frameworks).",
+            "Control estricto de versiones en repositorio público con convenciones de commits y etiquetado.",
+            "Verificación de criterios de calidad: diseño responsivo para dispositivos móviles, accesibilidad y rendimiento óptimo."
+        ],
+        herramientas: ["Git", "GitHub Pages", "Visual Studio Code", "Markdown", "Live Server"],
+        tags: ["#FeriaDePortales", "#GitHubPages", "#EvaluaciónFinal", "#RepasoIntegral"]
     }
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
     const contenedor = document.getElementById("contenedor-modulos");
     const buscador = document.getElementById("buscador");
+
+    // Crear canvas para el fondo animado tecnológico
+    const canvas = document.createElement('canvas');
+    canvas.id = 'bg-canvas';
+    canvas.style.position = 'fixed';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.width = '100vw';
+    canvas.style.height = '100vh';
+    canvas.style.zIndex = '-1';
+    canvas.style.pointerEvents = 'none';
+    document.body.prepend(canvas);
+
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    });
+
+    const particles = Array.from({ length: 45 }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6,
+        radius: Math.random() * 1.8 + 0.8,
+        alpha: Math.random() * 0.5 + 0.2
+    }));
+
+    function animate() {
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = '#070a15';
+        ctx.fillRect(0, 0, width, height);
+
+        particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.x < 0) p.x = width;
+            if (p.x > width) p.x = 0;
+            if (p.y < 0) p.y = height;
+            if (p.y > height) p.y = 0;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(34, 211, 238, ${p.alpha})`;
+            ctx.fill();
+        });
+
+        // Líneas de conexión sutiles
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 120) {
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.strokeStyle = `rgba(34, 211, 238, ${0.12 * (1 - dist / 120)})`;
+                    ctx.lineWidth = 0.6;
+                    ctx.stroke();
+                }
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+    animate();
 
     function normalizar(texto) {
         return texto ? texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : "";
@@ -173,13 +255,13 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
         contenedor.innerHTML = lista.map(m => `
-            <article class="card" style="background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:12px;">
+            <article class="card" style="background:rgba(15, 22, 48, 0.88); backdrop-filter:blur(8px); border:1px solid var(--line); border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:12px; box-shadow: 0 8px 32px rgba(0,0,0,0.3);">
                 <h3 style="color:var(--tx); font-size:18px;">${m.titulo}</h3>
                 <span class="badge-doc" style="color: var(--cy); font-size: 13px; font-weight: bold;">👨‍🏫 ${m.docente}</span>
                 <p style="color:var(--mut); font-size:14.5px; line-height:1.5;">${m.desc}</p>
                 
                 ${m.investigacion.length > 0 ? `
-                    <div class="sec-investigacion" style="background:var(--panel2); padding:12px; border-radius:8px; border:1px solid var(--line);">
+                    <div class="sec-investigacion" style="background:rgba(11, 17, 36, 0.9); padding:12px; border-radius:8px; border:1px solid var(--line);">
                         <h4 style="font-size:13px; color:var(--gr); margin-bottom:6px;">📋 Prácticas y Contenido Detallado:</h4>
                         <ul style="font-size:12.5px; color:var(--mut); padding-left:18px; display:flex; flex-direction:column; gap:4px;">
                             ${m.investigacion.map(item => `<li>${item}</li>`).join('')}
