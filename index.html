@@ -184,13 +184,22 @@
         }
 
         .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
+            background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+                linear-gradient(135deg, rgba(6, 182, 212, 0.65), rgba(139, 92, 246, 0.2), var(--border-color)) border-box;
+            border: 1px solid transparent;
             border-radius: 16px;
             padding: 1.5rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            box-shadow: 0 10px 30px rgba(2, 8, 23, 0.12);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-color);
+            box-shadow: 0 16px 36px rgba(2, 8, 23, 0.2);
         }
 
         .card-header {
@@ -264,6 +273,12 @@
             margin-bottom: 0.4rem;
         }
 
+        .topic-list {
+            display: grid;
+            gap: 0.55rem;
+            margin-top: 0.85rem;
+        }
+
         /* Checkbox de Progreso Guardado */
         .progress-check {
             display: flex;
@@ -280,6 +295,78 @@
             width: 16px;
             height: 16px;
             cursor: pointer;
+            flex: 0 0 auto;
+        }
+
+        .topic-check {
+            margin: 0;
+            font-size: 0.82rem;
+        }
+
+        .progress-panel {
+            width: 100%;
+            max-width: 760px;
+            padding: 1rem 1.2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--card-bg);
+        }
+
+        .progress-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.65rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .progress-panel-header strong {
+            color: var(--text-color);
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: var(--border-color);
+        }
+
+        .progress-bar {
+            width: 0;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--accent-color), #8b5cf6);
+            transition: width 0.25s ease;
+        }
+
+        .reset-progress {
+            border: 0;
+            background: transparent;
+            color: var(--accent-color);
+            cursor: pointer;
+            font: inherit;
+            font-size: 0.82rem;
+            text-decoration: underline;
+        }
+
+        .results-count, .empty-state {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .empty-state {
+            padding: 1.5rem;
+        }
+
+        .filter-btn:focus-visible, .theme-toggle:focus-visible,
+        .quiz-option-btn:focus-visible, .reset-progress:focus-visible,
+        .search-bar input:focus-visible {
+            outline: 3px solid var(--accent-color);
+            outline-offset: 3px;
         }
 
         /* Sección Quiz Interactivo Pro */
@@ -337,6 +424,21 @@
             margin-top: 1rem;
         }
 
+        .quiz-next {
+            background: var(--accent-color);
+            border: 0;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            font: inherit;
+            font-weight: 600;
+            padding: 0.65rem 1rem;
+        }
+
+        .quiz-next:hover {
+            background: var(--accent-hover);
+        }
+
         footer {
             text-align: center;
             padding: 2rem;
@@ -345,12 +447,40 @@
             font-size: 0.85rem;
             background-color: var(--header-bg);
         }
+
+        @media (max-width: 640px) {
+            header {
+                padding: 5rem 1rem 2rem;
+            }
+
+            .theme-toggle {
+                top: 1rem;
+                right: 1rem;
+            }
+
+            h1 {
+                font-size: 1.65rem;
+            }
+
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-header {
+                flex-direction: column;
+                gap: 0.65rem;
+            }
+
+            .quiz-section {
+                padding: 1.25rem;
+            }
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()">
+        <button class="theme-toggle" id="themeToggleBtn" type="button" aria-pressed="false">
             <i class="fa-solid fa-moon" id="themeIcon"></i> <span id="themeText">Modo Claro</span>
         </button>
         <div class="subtitle-top">INDEL · 3.° DESARROLLO DE SOFTWARE «B»</div>
@@ -363,16 +493,27 @@
         <div class="search-filter-container">
             <div class="search-bar">
                 <i class="fa-solid fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Busca un módulo, tema (ej: ITIL, Python, Odoo, SQL) o herramienta..." onkeyup="filterModules()">
+                <input type="search" id="searchInput" aria-label="Buscar módulos, temas y herramientas" placeholder="Busca un módulo, tema (ej: ITIL, Python, Odoo, SQL) o herramienta...">
             </div>
             <div class="filters">
-                <button class="filter-btn active" onclick="filterTag('todos', this)">Todos</button>
-                <button class="filter-btn" onclick="filterTag('mineros', this)">Prof. Javier Mineros</button>
-                <button class="filter-btn" onclick="filterTag('canales', this)">Prof. Arcides Canales</button>
-                <button class="filter-btn" onclick="filterTag('python', this)">Python & Odoo</button>
+                <button class="filter-btn active" type="button" data-filter="todos" aria-pressed="true">Todos</button>
+                <button class="filter-btn" type="button" data-filter="operacion" aria-pressed="false">Mantenimiento</button>
+                <button class="filter-btn" type="button" data-filter="datos" aria-pressed="false">Bases de datos</button>
+                <button class="filter-btn" type="button" data-filter="python" aria-pressed="false">Python & Odoo</button>
+                <button class="filter-btn" type="button" data-filter="canales" aria-pressed="false">Prof. Arcides Canales</button>
+            </div>
+            <div class="progress-panel" aria-label="Progreso del repaso">
+                <div class="progress-panel-header">
+                    <span><strong id="progressSummary">0 de 0 temas completados</strong></span>
+                    <button class="reset-progress" id="resetProgress" type="button">Reiniciar progreso</button>
+                </div>
+                <div class="progress-track" role="progressbar" aria-label="Progreso del repaso" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
             </div>
         </div>
 
+        <p class="results-count" id="resultsCount" aria-live="polite"></p>
         <div class="section-title">
             <i class="fa-solid fa-layer-group"></i> Módulos del Año
         </div>
@@ -381,7 +522,7 @@
         <div class="modules-grid" id="modulesGrid">
             
             <!-- Módulo 3.0 -->
-            <div class="card" data-tags="mineros equipos">
+            <div class="card" data-tags="orientacion equipos">
                 <div>
                     <div class="card-header">
                         <h3>Módulo 3.0 · Orientación y Equipos</h3>
@@ -393,14 +534,18 @@
                     <div class="tools-box">
                         <strong>Herramientas:</strong> Google Classroom, Drive, Generadores QR
                     </div>
+                    <div class="topic-list" aria-label="Temas del Módulo 3.0">
+                        <label class="progress-check topic-check"><input type="checkbox" data-id="topic-3.0-equipos"> Organización de equipos</label>
+                        <label class="progress-check topic-check"><input type="checkbox" data-id="topic-3.0-portafolio"> Portafolio digital y accesos QR</label>
+                    </div>
                     <label class="progress-check">
-                        <input type="checkbox" data-id="mod-3.0" onchange="saveProgress(this)"> Marcar repaso como completado
+                        <input type="checkbox" data-id="mod-3.0"> Marcar módulo como completado
                     </label>
                 </div>
             </div>
 
             <!-- Módulo 3.2 -->
-            <div class="card" data-tags="mineros soporte itil">
+            <div class="card" data-tags="operacion soporte itil sdlc sla mineros">
                 <div>
                     <div class="card-header">
                         <h3>Módulo 3.2 · Mantenimiento y Operación de Sistemas</h3>
@@ -410,10 +555,10 @@
                     <div class="content-list">
                         <h4><i class="fa-solid fa-book-open"></i> Contenido Detallado:</h4>
                         <ul>
-                            <li>Ciclo de vida (SDLC) y Mantenimiento.</li>
-                            <li>Niveles de Soporte Técnico (Tier 1 a Tier 4).</li>
-                            <li>Versionamiento Semántico y Git.</li>
-                            <li>Normativas ISO (27001, 20000, 25010) e ITIL 4.</li>
+                            <li>ITIL 4, gestión de servicios y mejora continua.</li>
+                            <li>SLAs: acuerdos de nivel de servicio y métricas.</li>
+                            <li>Ciclo de vida SDLC y mantenimiento de software.</li>
+                            <li>Niveles de soporte, ISO y planes DRP/BCP.</li>
                         </ul>
                     </div>
                 </div>
@@ -421,45 +566,56 @@
                     <div class="tools-box" style="margin-top: 1rem;">
                         <strong>Herramientas:</strong> Git, GitHub, Documentación Técnica
                     </div>
+                    <div class="topic-list" aria-label="Temas del Módulo 3.2">
+                        <label class="progress-check topic-check"><input type="checkbox" data-id="topic-3.2-itil"> ITIL 4 y gestión de servicios</label>
+                        <label class="progress-check topic-check"><input type="checkbox" data-id="topic-3.2-sla"> SLAs y métricas de servicio</label>
+                        <label class="progress-check topic-check"><input type="checkbox" data-id="topic-3.2-sdlc"> SDLC y mantenimiento</label>
+                        <label class="progress-check topic-check"><input type="checkbox" data-id="topic-3.2-iso"> Soporte técnico, ISO y continuidad</label>
+                    </div>
                     <label class="progress-check">
-                        <input type="checkbox" data-id="mod-3.2" onchange="saveProgress(this)"> Marcar repaso como completado
+                        <input type="checkbox" data-id="mod-3.2"> Marcar módulo como completado
                     </label>
                 </div>
             </div>
 
             <!-- Módulo 3.3 -->
-            <div class="card" data-tags="mineros bases de datos sql powerbi">
+            <div class="card" data-tags="datos bases de datos sql powerbi excel mineros">
                 <div>
                     <div class="card-header">
                         <h3>Módulo 3.3 · Administración de Bases de Datos</h3>
                         <span class="prof-badge"><i class="fa-solid fa-chalkboard-user"></i> Prof. Javier Mineros</span>
                     </div>
                     <p>Gestión de bases de datos relacionales, ejecución de consultas SQL complejas, creación de dashboards interactivos en Excel y análisis visual de datos con Power BI.</p>
+                    <div class="topic-list" aria-label="Temas del Módulo 3.3">
+                        <label class="progress-check topic-check"><input type="checkbox" data-id="topic-3.3-sql"> Consultas y bases de datos SQL</label>
+                        <label class="progress-check topic-check"><input type="checkbox" data-id="topic-3.3-powerbi"> Dashboards en Power BI</label>
+                        <label class="progress-check topic-check"><input type="checkbox" data-id="topic-3.3-excel"> Análisis de datos en Excel</label>
+                    </div>
                 </div>
                 <div>
                     <div class="tools-box">
                         <strong>Herramientas:</strong> SQL Server, Microsoft Excel, Power BI, VS Code
                     </div>
                     <label class="progress-check">
-                        <input type="checkbox" data-id="mod-3.3" onchange="saveProgress(this)"> Marcar repaso como completado
+                        <input type="checkbox" data-id="mod-3.3"> Marcar módulo como completado
                     </label>
                 </div>
             </div>
 
             <!-- Módulo 3.4 (NUEVO: Integrado según tus evidencias de tareas y entregas) -->
-            <div class="card" data-tags="python odoo documentos">
+            <div class="card" data-tags="python odoo documentos erp fases">
                 <div>
                     <div class="card-header">
-                        <h3>Módulo 3.4 · Elaboración de documentación y Python</h3>
+                        <h3>Módulo 3.4 · Elaboración de documentación y Apps en Python</h3>
                         <span class="prof-badge"><i class="fa-solid fa-code"></i> Prácticas y Desarrollo</span>
                     </div>
                     <p>Desarrollo de aplicaciones con Python, integración de sistemas ERP con Odoo, y estructuración de documentación técnica en fases (Fase 1 a Fase 7 / Recuperaciones).</p>
                     <div class="content-list">
-                        <h4><i class="fa-solid fa-list-check"></i> Tregas Clave:</h4>
+                        <h4><i class="fa-solid fa-list-check"></i> Entregas clave:</h4>
                         <ul>
-                            <li>Creando Apps con Python y Guía Individual.</li>
-                            <li>Odoo como Sistema ERP (Distribuidora Torogoz).</li>
-                            <li>Fases de Arquitectura y Documentación Final.</li>
+                            <li>Aplicaciones con Python y guía individual.</li>
+                            <li>Odoo como sistema ERP (Distribuidora Torogoz).</li>
+                            <li>Documentación y entregas de las fases 1 a 7.</li>
                         </ul>
                     </div>
                 </div>
@@ -467,8 +623,42 @@
                     <div class="tools-box" style="margin-top: 1rem;">
                         <strong>Herramientas:</strong> Python, Odoo ERP, Markdown, GitHub Pages
                     </div>
+                    <div class="topic-list" aria-label="Temas del Módulo 3.4">
+                        <label class="progress-check topic-check"><input type="checkbox" data-id="topic-3.4-python"> Aplicaciones con Python</label>
+                        <label class="progress-check topic-check"><input type="checkbox" data-id="topic-3.4-odoo"> ERP Odoo</label>
+                        <label class="progress-check topic-check"><input type="checkbox" data-id="topic-3.4-docs"> Documentación técnica</label>
+                        <label class="progress-check topic-check"><input type="checkbox" data-id="topic-3.4-phases"> Fases 1 a 7</label>
+                    </div>
                     <label class="progress-check">
-                        <input type="checkbox" data-id="mod-3.4" onchange="saveProgress(this)"> Marcar repaso como completado
+                        <input type="checkbox" data-id="mod-3.4"> Marcar módulo como completado
+                    </label>
+                </div>
+            </div>
+
+            <!-- Módulo 3.8 -->
+            <div class="card" data-tags="proyecto innovador canales manual exposiciones avances vscode git github documentacion metodologias-agiles">
+                <div>
+                    <div class="card-header">
+                        <h3>Módulo 3.8 · Proyecto Innovador de Desarrollo de Software</h3>
+                        <span class="prof-badge"><i class="fa-solid fa-chalkboard-user"></i> Prof. Arcides Canales</span>
+                    </div>
+                    <p>Desarrollo integral de proyectos de software innovadores, desde la concepción de ideas y documentación hasta los manuales de usuario y sistema, avances periódicos del 10% y 15%, exposiciones y entregas finales.</p>
+                    <div class="content-list">
+                        <h4><i class="fa-solid fa-list-check"></i> Contenido detallado y entregas clave:</h4>
+                        <ul>
+                            <li>Avances de Proyecto Innovador (10% y 15%).</li>
+                            <li>Elaboración de Manual de Sistema y Documentación.</li>
+                            <li>Prácticas semanales y exposición de proyectos.</li>
+                            <li>Entregas finales y evaluaciones periódicas.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <div class="tools-box" style="margin-top: 1rem;">
+                        <strong>Herramientas:</strong> VS Code, Git, GitHub, Documentación Técnica, Metodologías Ágiles
+                    </div>
+                    <label class="progress-check">
+                        <input type="checkbox" data-id="mod-3.8"> Marcar módulo como completado
                     </label>
                 </div>
             </div>
@@ -480,13 +670,10 @@
             <i class="fa-solid fa-circle-question"></i> Quiz de Autoevaluación Rápida
         </div>
         <div class="quiz-section">
-            <div class="quiz-question" id="quizQuestion">¿Qué significan las siglas ITIL enfocadas en la gestión de servicios tecnológicos?</div>
-            <div class="quiz-options" id="quizOptions">
-                <button class="quiz-option-btn" onclick="checkAnswer(0)">A) International Technology Infrastructure Library</button>
-                <button class="quiz-option-btn" onclick="checkAnswer(1)">B) Information Technology Infrastructure Library</button>
-                <button class="quiz-option-btn" onclick="checkAnswer(2)">C) Internet Transmission Internal Logic</button>
-            </div>
-            <div class="quiz-feedback" id="quizFeedback"></div>
+            <p class="quiz-question" id="quizQuestion"></p>
+            <div class="quiz-options" id="quizOptions"></div>
+            <div class="quiz-feedback" id="quizFeedback" role="status" aria-live="polite"></div>
+            <button class="quiz-next" id="quizNext" type="button" hidden>Siguiente pregunta</button>
         </div>
 
     </div>
@@ -496,105 +683,193 @@
     </footer>
 
     <script>
-        // 1. Lógica de Modo Claro y Oscuro con Persistencia
-        function toggleTheme() {
-            const html = document.documentElement;
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('hub_theme', newTheme);
-            updateThemeButton(newTheme);
+        const quizQuestions = [
+            {
+                question: '¿Qué significan las siglas ITIL en la gestión de servicios tecnológicos?',
+                options: [
+                    'International Technology Infrastructure Library',
+                    'Information Technology Infrastructure Library',
+                    'Internet Transmission Internal Logic'
+                ],
+                answer: 1,
+                explanation: 'ITIL es un conjunto de buenas prácticas para gestionar servicios de tecnologías de información.'
+            },
+            {
+                question: '¿Qué define principalmente un SLA?',
+                options: [
+                    'Los niveles de servicio, métricas y responsabilidades acordadas',
+                    'El lenguaje usado para programar una aplicación',
+                    'El diseño físico de una base de datos'
+                ],
+                answer: 0,
+                explanation: 'Un SLA (acuerdo de nivel de servicio) documenta los objetivos y compromisos entre proveedor y cliente.'
+            },
+            {
+                question: '¿Qué describe el SDLC?',
+                options: [
+                    'Un formato para almacenar consultas SQL',
+                    'Las etapas del ciclo de vida de desarrollo de software',
+                    'Un acuerdo de disponibilidad entre equipos'
+                ],
+                answer: 1,
+                explanation: 'El SDLC organiza las fases de desarrollo, desde la planificación y análisis hasta las pruebas y mantenimiento.'
+            }
+        ];
+
+        const searchInput = document.getElementById('searchInput');
+        const cards = [...document.querySelectorAll('.modules-grid .card')];
+        const filterButtons = [...document.querySelectorAll('.filter-btn')];
+        const progressInputs = [...document.querySelectorAll('.progress-check input[data-id]')];
+        let activeFilter = 'todos';
+        let quizIndex = 0;
+        let quizScore = 0;
+        let answered = false;
+
+        function normalizeText(value) {
+            return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es');
         }
 
         function updateThemeButton(theme) {
-            const icon = document.getElementById('themeIcon');
-            const text = document.getElementById('themeText');
-            if (theme === 'light') {
-                icon.className = 'fa-solid fa-sun';
-                text.textContent = 'Modo Oscuro';
-            } else {
-                icon.className = 'fa-solid fa-moon';
-                text.textContent = 'Modo Claro';
+            const isLight = theme === 'light';
+            document.getElementById('themeIcon').className = isLight ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            document.getElementById('themeText').textContent = isLight ? 'Modo Oscuro' : 'Modo Claro';
+            document.getElementById('themeToggleBtn').setAttribute('aria-pressed', String(isLight));
+        }
+
+        function updateFilters() {
+            const query = normalizeText(searchInput.value.trim());
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const searchableText = `${card.textContent} ${card.dataset.tags}`;
+                const matchesQuery = normalizeText(searchableText).includes(query);
+                const tags = card.dataset.tags.split(/\s+/);
+                const matchesFilter = activeFilter === 'todos' || tags.includes(activeFilter);
+                const visible = matchesQuery && matchesFilter;
+                card.style.display = visible ? 'flex' : 'none';
+                visibleCount += Number(visible);
+            });
+
+            document.getElementById('resultsCount').textContent =
+                visibleCount ? `${visibleCount} ${visibleCount === 1 ? 'módulo encontrado' : 'módulos encontrados'}` : '';
+            let emptyState = document.getElementById('emptyState');
+            if (!visibleCount && !emptyState) {
+                emptyState = document.createElement('p');
+                emptyState.id = 'emptyState';
+                emptyState.className = 'empty-state';
+                emptyState.textContent = 'No hay módulos que coincidan con tu búsqueda y filtro.';
+                document.getElementById('modulesGrid').append(emptyState);
+            } else if (visibleCount && emptyState) {
+                emptyState.remove();
             }
         }
 
-        // Cargar tema guardado al iniciar
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('hub_theme') || 'dark';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            updateThemeButton(savedTheme);
-            loadProgress();
+        function updateProgress() {
+            const completed = progressInputs.filter(input => input.checked).length;
+            const total = progressInputs.length;
+            const percentage = total ? Math.round((completed / total) * 100) : 0;
+            document.getElementById('progressSummary').textContent = `${completed} de ${total} temas completados · ${percentage}%`;
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+            document.querySelector('.progress-track').setAttribute('aria-valuenow', String(percentage));
+        }
+
+        function renderQuestion() {
+            const question = quizQuestions[quizIndex];
+            const optionsContainer = document.getElementById('quizOptions');
+            document.getElementById('quizQuestion').textContent = question.question;
+            document.getElementById('quizFeedback').textContent = '';
+            document.getElementById('quizNext').hidden = true;
+            optionsContainer.replaceChildren();
+            answered = false;
+
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'quiz-option-btn';
+                button.textContent = `${String.fromCharCode(65 + index)}) ${option}`;
+                button.addEventListener('click', () => checkAnswer(index));
+                optionsContainer.append(button);
+            });
+        }
+
+        function checkAnswer(selectedIndex) {
+            if (answered) return;
+            answered = true;
+            const question = quizQuestions[quizIndex];
+            const options = document.querySelectorAll('.quiz-option-btn');
+
+            options.forEach((button, index) => {
+                button.disabled = true;
+                if (index === question.answer) button.classList.add('correct');
+                else if (index === selectedIndex) button.classList.add('incorrect');
+            });
+
+            const isCorrect = selectedIndex === question.answer;
+            if (isCorrect) quizScore += 1;
+            document.getElementById('quizFeedback').textContent =
+                `${isCorrect ? '¡Correcto!' : 'No exactamente.'} ${question.explanation} Puntaje: ${quizScore}/${quizIndex + 1}.`;
+            document.getElementById('quizNext').textContent =
+                quizIndex === quizQuestions.length - 1 ? 'Repetir quiz' : 'Siguiente pregunta';
+            document.getElementById('quizNext').hidden = false;
+        }
+
+        document.getElementById('themeToggleBtn').addEventListener('click', () => {
+            const currentTheme = document.documentElement.dataset.theme;
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.dataset.theme = newTheme;
+            localStorage.setItem('hub_theme', newTheme);
+            updateThemeButton(newTheme);
         });
 
-        // 2. Buscador y Filtros en Tiempo Real
-        function filterModules() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const cards = document.querySelectorAll('.modules-grid .card');
-
-            cards.forEach(card => {
-                const text = card.textContent.toLowerCase();
-                if (text.includes(query)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
+        searchInput.addEventListener('input', updateFilters);
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                activeFilter = button.dataset.filter;
+                filterButtons.forEach(filterButton => {
+                    const isActive = filterButton === button;
+                    filterButton.classList.toggle('active', isActive);
+                    filterButton.setAttribute('aria-pressed', String(isActive));
+                });
+                updateFilters();
             });
-        }
+        });
 
-        function filterTag(tag, btn) {
-            // Actualizar botones activos
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            const cards = document.querySelectorAll('.modules-grid .card');
-            cards.forEach(card => {
-                const tags = card.getAttribute('data-tags');
-                if (tag === 'todos' || tags.includes(tag)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
+        progressInputs.forEach(input => {
+            input.checked = localStorage.getItem(`progress_${input.dataset.id}`) === 'true';
+            input.addEventListener('change', () => {
+                localStorage.setItem(`progress_${input.dataset.id}`, String(input.checked));
+                updateProgress();
             });
-        }
+        });
 
-        // 3. Progreso Guardado en el Navegador (LocalStorage)
-        function saveProgress(checkbox) {
-            const id = checkbox.getAttribute('data-id');
-            localStorage.setItem(`progress_${id}`, checkbox.checked);
-        }
-
-        function loadProgress() {
-            document.querySelectorAll('.progress-check input').forEach(checkbox => {
-                const id = checkbox.getAttribute('data-id');
-                const savedState = localStorage.getItem(`progress_${id}`);
-                if (savedState === 'true') {
-                    checkbox.checked = true;
-                }
+        document.getElementById('resetProgress').addEventListener('click', () => {
+            if (!progressInputs.some(input => input.checked)) return;
+            if (!window.confirm('¿Quieres borrar todo el progreso guardado en este navegador?')) return;
+            progressInputs.forEach(input => {
+                input.checked = false;
+                localStorage.removeItem(`progress_${input.dataset.id}`);
             });
-        }
+            updateProgress();
+        });
 
-        // 4. Quiz Interactivo con Retroalimentación Inmediata
-        const correctAnswerIndex = 1; // Opción B
-        function checkAnswer(selectedIndex) {
-            const options = document.querySelectorAll('.quiz-option-btn');
-            const feedback = document.getElementById('quizFeedback');
-
-            // Deshabilitar botones después de responder
-            options.forEach((btn, index) => {
-                btn.style.pointerEvents = 'none';
-                if (index === correctAnswerIndex) {
-                    btn.classList.add('correct');
-                } else if (index === selectedIndex) {
-                    btn.classList.add('incorrect');
-                }
-            });
-
-            if (selectedIndex === correctAnswerIndex) {
-                feedback.innerHTML = '<span style="color: #10b981;"><i class="fa-solid fa-circle-check"></i> ¡Correcto! ITIL (Information Technology Infrastructure Library) es el marco estándar para la gestión de servicios de TI.</span>';
+        document.getElementById('quizNext').addEventListener('click', () => {
+            if (quizIndex === quizQuestions.length - 1) {
+                quizIndex = 0;
+                quizScore = 0;
             } else {
-                feedback.innerHTML = '<span style="color: #ef4444;"><i class="fa-solid fa-circle-xmark"></i> Incorrecto. La respuesta correcta es la opción B. ¡Sigue repasando!</span>';
+                quizIndex += 1;
             }
+            renderQuestion();
+        });
+
+        const savedTheme = localStorage.getItem('hub_theme');
+        if (savedTheme === 'light' || savedTheme === 'dark') {
+            document.documentElement.dataset.theme = savedTheme;
         }
+        updateThemeButton(document.documentElement.dataset.theme);
+        updateFilters();
+        updateProgress();
+        renderQuestion();
     </script>
 </body>
 </html>
