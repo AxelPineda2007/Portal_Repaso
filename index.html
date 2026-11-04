@@ -1,64 +1,600 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal HUB de Repaso Anual · INDEL 3.º DS «B»</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Portal HUB de Repaso Anual - 3.° Desarrollo de Software</title>
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #131c2e;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent-color: #06b6d4;
+            --accent-hover: #0891b2;
+            --border-color: #1e293b;
+            --header-bg: #0f172a;
+            --badge-bg: rgba(6, 182, 212, 0.1);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --text-muted: #64748b;
+            --accent-color: #0284c7;
+            --accent-hover: #0369a1;
+            --border-color: #e2e8f0;
+            --header-bg: #ffffff;
+            --badge-bg: rgba(2, 132, 199, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--header-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 2rem 1rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5px;
+        }
+
+        .subtitle-top {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        p.description {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            width: 100%;
+            flex: 1;
+        }
+
+        /* Buscador y Filtros */
+        .search-filter-container {
+            margin-bottom: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-bar {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.9rem 1rem 0.9rem 3rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--accent-color);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background-color: var(--accent-color);
+            color: #ffffff;
+            border-color: var(--accent-color);
+        }
+
+        /* Sección de Módulos Grid */
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 0.75rem;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .prof-badge {
+            background-color: var(--badge-bg);
+            color: var(--accent-color);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.3rem 0.7rem;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .card h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1.2rem;
+        }
+
+        .tools-box {
+            font-size: 0.85rem;
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .tools-box strong {
+            color: var(--text-color);
+        }
+
+        /* Contenidos detallados (Listas estilo imagen 2) */
+        .content-list {
+            background: rgba(0,0,0,0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .content-list h4 {
+            color: var(--accent-color);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .content-list ul {
+            padding-left: 1.2rem;
+            color: var(--text-muted);
+        }
+
+        .content-list li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* Checkbox de Progreso Guardado */
+        .progress-check {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .progress-check input {
+            accent-color: var(--accent-color);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        /* Sección Quiz Interactivo Pro */
+        .quiz-section {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .quiz-question {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 1rem;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-option-btn {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .quiz-option-btn:hover {
+            border-color: var(--accent-color);
+        }
+
+        .quiz-option-btn.correct {
+            background-color: rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
+            color: #10b981;
+        }
+
+        .quiz-option-btn.incorrect {
+            background-color: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .quiz-feedback {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            background-color: var(--header-bg);
+        }
+    </style>
 </head>
 <body>
-    <header class="header">
-        <div class="wrap header-content">
-            <div class="header-text">
-                <span class="sub-title">INDEL · 3.º DESARROLLO DE SOFTWARE «B»</span>
-                <h1>Portal HUB de Repaso Anual</h1>
-                <p>Resumen integral de módulos, proyectos, investigación de soporte y herramientas del año.</p>
-            </div>
-            <button id="theme-toggle" class="btn-theme" title="Cambiar Tema">🌙 Modo Oscuro</button>
-        </div>
+
+    <header>
+        <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()">
+            <i class="fa-solid fa-moon" id="themeIcon"></i> <span id="themeText">Modo Claro</span>
+        </button>
+        <div class="subtitle-top">INDEL · 3.° DESARROLLO DE SOFTWARE «B»</div>
+        <h1>Portal HUB de Repaso Anual</h1>
+        <p class="description">Resumen integral de módulos, proyectos, investigación de soporte y herramientas del año con progreso guardado y evaluación interactiva.</p>
     </header>
 
-    <main class="wrap">
+    <div class="container">
         <!-- Buscador y Filtros -->
-        <section class="controls-section">
-            <div class="search-box">
-                <input type="text" id="buscador" placeholder="Busca un módulo, tema (ej: ITIL, SLA, Python, Git) o herramienta...">
+        <div class="search-filter-container">
+            <div class="search-bar">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Busca un módulo, tema (ej: ITIL, Python, Odoo, SQL) o herramienta..." onkeyup="filterModules()">
             </div>
-            <div class="filter-buttons">
-                <button class="btn-filter active" data-filter="todos">Todos</button>
-                <button class="btn-filter" data-filter="mineros">Prof. Javier Mineros</button>
-                <button class="btn-filter" data-filter="canales">Prof. Arcides Canales</button>
-                <button class="btn-filter" data-filter="m32">Investigación M3.2</button>
+            <div class="filters">
+                <button class="filter-btn active" onclick="filterTag('todos', this)">Todos</button>
+                <button class="filter-btn" onclick="filterTag('mineros', this)">Prof. Javier Mineros</button>
+                <button class="filter-btn" onclick="filterTag('canales', this)">Prof. Arcides Canales</button>
+                <button class="filter-btn" onclick="filterTag('python', this)">Python & Odoo</button>
             </div>
-        </section>
+        </div>
 
-        <!-- Módulos del Año -->
-        <section class="modules-section">
-            <div class="section-header">
-                <h2>Módulos del Año</h2>
-                <div class="progress-info">
-                    <span>Progreso global: <strong id="progreso-texto">0%</strong></span>
-                    <progress id="bar-progreso" value="0" max="100"></progress>
+        <div class="section-title">
+            <i class="fa-solid fa-layer-group"></i> Módulos del Año
+        </div>
+
+        <!-- Grid de Módulos (Incluyendo los módulos nuevos pedidos) -->
+        <div class="modules-grid" id="modulesGrid">
+            
+            <!-- Módulo 3.0 -->
+            <div class="card" data-tags="mineros equipos">
+                <div>
+                    <div class="card-header">
+                        <h3>Módulo 3.0 · Orientación y Equipos</h3>
+                        <span class="prof-badge"><i class="fa-solid fa-chalkboard-user"></i> Prof. Javier Mineros</span>
+                    </div>
+                    <p>Organización inicial del tercer año, conformación de equipos de trabajo técnico, portafolios digitales y distribución de accesos QR para el seguimiento académico.</p>
+                </div>
+                <div>
+                    <div class="tools-box">
+                        <strong>Herramientas:</strong> Google Classroom, Drive, Generadores QR
+                    </div>
+                    <label class="progress-check">
+                        <input type="checkbox" data-id="mod-3.0" onchange="saveProgress(this)"> Marcar repaso como completado
+                    </label>
                 </div>
             </div>
-            <div id="contenedor-modulos" class="grid-modulos"></div>
-        </section>
 
-        <!-- Quiz Interactivo -->
-        <section class="quiz-section">
-            <h2>🧠 Quiz Interactivo de Repaso</h2>
-            <p>Pon a prueba tus conocimientos sobre los temas vistos durante el año con retroalimentación inmediata.</p>
-            <div id="quiz-container" class="quiz-card"></div>
-        </section>
-    </main>
+            <!-- Módulo 3.2 -->
+            <div class="card" data-tags="mineros soporte itil">
+                <div>
+                    <div class="card-header">
+                        <h3>Módulo 3.2 · Mantenimiento y Operación de Sistemas</h3>
+                        <span class="prof-badge"><i class="fa-solid fa-chalkboard-user"></i> Prof. Javier Mineros</span>
+                    </div>
+                    <p>Investigación profunda sobre el ciclo de vida del software (SDLC), metodologías de soporte técnico, normativas ISO, ITIL 4, SLAs y planes de contingencia (DRP/BCP).</p>
+                    <div class="content-list">
+                        <h4><i class="fa-solid fa-book-open"></i> Contenido Detallado:</h4>
+                        <ul>
+                            <li>Ciclo de vida (SDLC) y Mantenimiento.</li>
+                            <li>Niveles de Soporte Técnico (Tier 1 a Tier 4).</li>
+                            <li>Versionamiento Semántico y Git.</li>
+                            <li>Normativas ISO (27001, 20000, 25010) e ITIL 4.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <div class="tools-box" style="margin-top: 1rem;">
+                        <strong>Herramientas:</strong> Git, GitHub, Documentación Técnica
+                    </div>
+                    <label class="progress-check">
+                        <input type="checkbox" data-id="mod-3.2" onchange="saveProgress(this)"> Marcar repaso como completado
+                    </label>
+                </div>
+            </div>
 
-    <footer class="footer">
-        <div class="wrap">
-            <p>Desarrollado por: <strong>Axel Pineda</strong> · Instituto Nacional Cantón Lourdes (INDEL)</p>
-            <p>3.º Bachillerato Técnico Vocacional en Desarrollo de Software «B»</p>
+            <!-- Módulo 3.3 -->
+            <div class="card" data-tags="mineros bases de datos sql powerbi">
+                <div>
+                    <div class="card-header">
+                        <h3>Módulo 3.3 · Administración de Bases de Datos</h3>
+                        <span class="prof-badge"><i class="fa-solid fa-chalkboard-user"></i> Prof. Javier Mineros</span>
+                    </div>
+                    <p>Gestión de bases de datos relacionales, ejecución de consultas SQL complejas, creación de dashboards interactivos en Excel y análisis visual de datos con Power BI.</p>
+                </div>
+                <div>
+                    <div class="tools-box">
+                        <strong>Herramientas:</strong> SQL Server, Microsoft Excel, Power BI, VS Code
+                    </div>
+                    <label class="progress-check">
+                        <input type="checkbox" data-id="mod-3.3" onchange="saveProgress(this)"> Marcar repaso como completado
+                    </label>
+                </div>
+            </div>
+
+            <!-- Módulo 3.4 (NUEVO: Integrado según tus evidencias de tareas y entregas) -->
+            <div class="card" data-tags="python odoo documentos">
+                <div>
+                    <div class="card-header">
+                        <h3>Módulo 3.4 · Elaboración de documentación y Python</h3>
+                        <span class="prof-badge"><i class="fa-solid fa-code"></i> Prácticas y Desarrollo</span>
+                    </div>
+                    <p>Desarrollo de aplicaciones con Python, integración de sistemas ERP con Odoo, y estructuración de documentación técnica en fases (Fase 1 a Fase 7 / Recuperaciones).</p>
+                    <div class="content-list">
+                        <h4><i class="fa-solid fa-list-check"></i> Tregas Clave:</h4>
+                        <ul>
+                            <li>Creando Apps con Python y Guía Individual.</li>
+                            <li>Odoo como Sistema ERP (Distribuidora Torogoz).</li>
+                            <li>Fases de Arquitectura y Documentación Final.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <div class="tools-box" style="margin-top: 1rem;">
+                        <strong>Herramientas:</strong> Python, Odoo ERP, Markdown, GitHub Pages
+                    </div>
+                    <label class="progress-check">
+                        <input type="checkbox" data-id="mod-3.4" onchange="saveProgress(this)"> Marcar repaso como completado
+                    </label>
+                </div>
+            </div>
+
         </div>
+
+        <!-- Quiz Interactivo Pro -->
+        <div class="section-title">
+            <i class="fa-solid fa-circle-question"></i> Quiz de Autoevaluación Rápida
+        </div>
+        <div class="quiz-section">
+            <div class="quiz-question" id="quizQuestion">¿Qué significan las siglas ITIL enfocadas en la gestión de servicios tecnológicos?</div>
+            <div class="quiz-options" id="quizOptions">
+                <button class="quiz-option-btn" onclick="checkAnswer(0)">A) International Technology Infrastructure Library</button>
+                <button class="quiz-option-btn" onclick="checkAnswer(1)">B) Information Technology Infrastructure Library</button>
+                <button class="quiz-option-btn" onclick="checkAnswer(2)">C) Internet Transmission Internal Logic</button>
+            </div>
+            <div class="quiz-feedback" id="quizFeedback"></div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>Portal HUB de Repaso Anual · 3.° Desarrollo de Software · Desarrollado por Axel Pineda</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        // 1. Lógica de Modo Claro y Oscuro con Persistencia
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('hub_theme', newTheme);
+            updateThemeButton(newTheme);
+        }
+
+        function updateThemeButton(theme) {
+            const icon = document.getElementById('themeIcon');
+            const text = document.getElementById('themeText');
+            if (theme === 'light') {
+                icon.className = 'fa-solid fa-sun';
+                text.textContent = 'Modo Oscuro';
+            } else {
+                icon.className = 'fa-solid fa-moon';
+                text.textContent = 'Modo Claro';
+            }
+        }
+
+        // Cargar tema guardado al iniciar
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('hub_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeButton(savedTheme);
+            loadProgress();
+        });
+
+        // 2. Buscador y Filtros en Tiempo Real
+        function filterModules() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.modules-grid .card');
+
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function filterTag(tag, btn) {
+            // Actualizar botones activos
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const cards = document.querySelectorAll('.modules-grid .card');
+            cards.forEach(card => {
+                const tags = card.getAttribute('data-tags');
+                if (tag === 'todos' || tags.includes(tag)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // 3. Progreso Guardado en el Navegador (LocalStorage)
+        function saveProgress(checkbox) {
+            const id = checkbox.getAttribute('data-id');
+            localStorage.setItem(`progress_${id}`, checkbox.checked);
+        }
+
+        function loadProgress() {
+            document.querySelectorAll('.progress-check input').forEach(checkbox => {
+                const id = checkbox.getAttribute('data-id');
+                const savedState = localStorage.getItem(`progress_${id}`);
+                if (savedState === 'true') {
+                    checkbox.checked = true;
+                }
+            });
+        }
+
+        // 4. Quiz Interactivo con Retroalimentación Inmediata
+        const correctAnswerIndex = 1; // Opción B
+        function checkAnswer(selectedIndex) {
+            const options = document.querySelectorAll('.quiz-option-btn');
+            const feedback = document.getElementById('quizFeedback');
+
+            // Deshabilitar botones después de responder
+            options.forEach((btn, index) => {
+                btn.style.pointerEvents = 'none';
+                if (index === correctAnswerIndex) {
+                    btn.classList.add('correct');
+                } else if (index === selectedIndex) {
+                    btn.classList.add('incorrect');
+                }
+            });
+
+            if (selectedIndex === correctAnswerIndex) {
+                feedback.innerHTML = '<span style="color: #10b981;"><i class="fa-solid fa-circle-check"></i> ¡Correcto! ITIL (Information Technology Infrastructure Library) es el marco estándar para la gestión de servicios de TI.</span>';
+            } else {
+                feedback.innerHTML = '<span style="color: #ef4444;"><i class="fa-solid fa-circle-xmark"></i> Incorrecto. La respuesta correcta es la opción B. ¡Sigue repasando!</span>';
+            }
+        }
+    </script>
 </body>
 </html>
