@@ -21,6 +21,12 @@
             --border-color: #1e293b;
             --header-bg: #0f172a;
             --badge-bg: rgba(6, 182, 212, 0.1);
+            --neon-cyan: #00f3ff;
+            --neon-blue: #2563ff;
+            --neon-purple: #8a2be2;
+            --neon-edge: rgba(0, 243, 255, 0.75);
+            --neon-halo: rgba(0, 243, 255, 0.17);
+            --surface-glass: rgba(11, 15, 25, 0.78);
         }
 
         [data-theme="light"] {
@@ -33,6 +39,12 @@
             --border-color: #e2e8f0;
             --header-bg: #ffffff;
             --badge-bg: rgba(2, 132, 199, 0.1);
+            --neon-cyan: #0284c7;
+            --neon-blue: #4f46e5;
+            --neon-purple: #7c3aed;
+            --neon-edge: rgba(2, 132, 199, 0.62);
+            --neon-halo: rgba(99, 102, 241, 0.1);
+            --surface-glass: rgba(248, 250, 252, 0.86);
         }
 
         * {
@@ -49,14 +61,50 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            position: relative;
+            isolation: isolate;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: -18%;
+            z-index: -1;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse at 18% 22%, color-mix(in srgb, var(--neon-cyan) 20%, transparent), transparent 38%),
+                radial-gradient(ellipse at 82% 28%, color-mix(in srgb, var(--neon-purple) 20%, transparent), transparent 40%),
+                radial-gradient(ellipse at 55% 82%, color-mix(in srgb, var(--neon-blue) 18%, transparent), transparent 42%);
+            filter: blur(42px);
+            opacity: 0.72;
+            animation: cyber-aurora 24s ease-in-out infinite alternate;
+            will-change: transform;
+        }
+
+        @keyframes cyber-aurora {
+            0% { transform: translate3d(-2%, -1%, 0) scale(1); }
+            50% { transform: translate3d(2%, 1.5%, 0) scale(1.06); }
+            100% { transform: translate3d(-1%, 2%, 0) scale(1.02); }
+        }
+
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
         }
 
         header {
-            background-color: var(--header-bg);
+            background-color: color-mix(in srgb, var(--header-bg) 72%, transparent);
             border-bottom: 1px solid var(--border-color);
             padding: 2rem 1rem;
             text-align: center;
             position: relative;
+            z-index: 1;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
 
         .theme-toggle {
@@ -103,6 +151,8 @@
             padding: 2rem 1rem;
             width: 100%;
             flex: 1;
+            position: relative;
+            z-index: 1;
         }
 
         /* Buscador y Filtros */
@@ -197,22 +247,34 @@
         }
 
         .card {
-            background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
-                linear-gradient(135deg, rgba(6, 182, 212, 0.65), rgba(139, 92, 246, 0.2), var(--border-color)) border-box;
+            position: relative;
+            isolation: isolate;
+            background: linear-gradient(color-mix(in srgb, var(--card-bg) 88%, transparent), color-mix(in srgb, var(--card-bg) 88%, transparent)) padding-box,
+                linear-gradient(135deg, var(--neon-edge), color-mix(in srgb, var(--neon-purple) 72%, transparent) 48%, var(--border-color)) border-box;
             border: 1px solid transparent;
             border-radius: 16px;
             padding: 1.5rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: 0 10px 30px rgba(2, 8, 23, 0.12);
-            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            box-shadow: 0 12px 32px rgba(2, 8, 23, 0.2), 0 0 18px var(--neon-halo);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transform-style: preserve-3d;
+            transition: transform 0.35s cubic-bezier(0.2, 0.75, 0.25, 1), box-shadow 0.35s ease, background 0.35s ease;
         }
 
-        .card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent-color);
-            box-shadow: 0 16px 36px rgba(2, 8, 23, 0.2);
+        @media (hover: hover) and (pointer: fine) {
+            .card:hover {
+                transform: perspective(900px) translateY(-8px) scale(1.02) rotateX(1deg);
+                background: linear-gradient(color-mix(in srgb, var(--card-bg) 82%, transparent), color-mix(in srgb, var(--card-bg) 82%, transparent)) padding-box,
+                    linear-gradient(125deg, var(--neon-cyan), var(--neon-purple), var(--neon-blue)) border-box;
+                box-shadow:
+                    0 22px 44px rgba(2, 8, 23, 0.28),
+                    0 0 14px var(--neon-edge),
+                    0 0 34px var(--neon-halo),
+                    inset 0 0 28px var(--neon-halo);
+            }
         }
 
         .card-header {
@@ -232,6 +294,14 @@
             display: inline-flex;
             align-items: center;
             gap: 0.3rem;
+            border: 1px solid var(--neon-edge);
+            box-shadow: 0 0 10px var(--neon-halo), inset 0 0 8px var(--neon-halo);
+            animation: badge-neon-pulse 3.2s ease-in-out infinite;
+        }
+
+        @keyframes badge-neon-pulse {
+            0%, 100% { box-shadow: 0 0 7px var(--neon-halo), inset 0 0 5px var(--neon-halo); }
+            50% { box-shadow: 0 0 13px var(--neon-halo), inset 0 0 9px var(--neon-halo); }
         }
 
         .card h3 {
@@ -656,7 +726,11 @@
             border-top: 1px solid var(--border-color);
             color: var(--text-muted);
             font-size: 0.85rem;
-            background-color: var(--header-bg);
+            background-color: color-mix(in srgb, var(--header-bg) 72%, transparent);
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
 
         @media (max-width: 640px) {
@@ -703,10 +777,14 @@
                 scroll-behavior: auto !important;
                 transition-duration: 0.01ms !important;
             }
+
+            body::before { animation: none; }
         }
     </style>
 </head>
 <body>
+
+    <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
     <header>
         <button class="install-button" id="installApp" type="button" hidden>Instalar app</button>
@@ -1353,6 +1431,153 @@
         updateAchievements();
         renderFlashcard();
         renderQuestion();
+
+        // Fondo de partículas en una capa decorativa, independiente de las interacciones del portal.
+        const ambientCanvas = document.getElementById('bg-canvas');
+        const ambientContext = ambientCanvas.getContext('2d', { alpha: true });
+
+        if (ambientContext) {
+            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+            const pointer = { x: -1000, y: -1000 };
+            const particles = [];
+            let canvasWidth = 0;
+            let canvasHeight = 0;
+            let animationFrame = 0;
+            let lastFrameTime = 0;
+            let colors = null;
+
+            function setCanvasColors() {
+                const isLight = document.documentElement.dataset.theme === 'light';
+                colors = isLight
+                    ? { node: '37, 99, 235', link: '124, 58, 237', alpha: 0.13, linkAlpha: 0.08, glow: '79, 70, 229', glowAlpha: 0.1 }
+                    : { node: '0, 243, 255', link: '138, 43, 226', alpha: 0.72, linkAlpha: 0.25, glow: '37, 99, 255', glowAlpha: 0.2 };
+            }
+
+            function resizeAmbientCanvas() {
+                const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+                canvasWidth = window.innerWidth;
+                canvasHeight = window.innerHeight;
+                ambientCanvas.width = Math.round(canvasWidth * pixelRatio);
+                ambientCanvas.height = Math.round(canvasHeight * pixelRatio);
+                ambientContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
+                const particleCount = Math.min(64, Math.max(22, Math.round((canvasWidth * canvasHeight) / 22000)));
+                particles.length = 0;
+                for (let index = 0; index < particleCount; index += 1) {
+                    particles.push({
+                        x: Math.random() * canvasWidth,
+                        y: Math.random() * canvasHeight,
+                        vx: (Math.random() - 0.5) * 0.22,
+                        vy: (Math.random() - 0.5) * 0.22,
+                        radius: Math.random() * 1.4 + 0.7
+                    });
+                }
+
+                drawAmbientFrame(0);
+                if (!reducedMotion.matches && !document.hidden) startAmbientAnimation();
+            }
+
+            function drawAmbientFrame(delta) {
+                ambientContext.clearRect(0, 0, canvasWidth, canvasHeight);
+                if (pointer.x >= 0 && pointer.y >= 0) {
+                    const cursorGlow = ambientContext.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, 250);
+                    cursorGlow.addColorStop(0, `rgba(${colors.glow}, ${colors.glowAlpha})`);
+                    cursorGlow.addColorStop(1, `rgba(${colors.glow}, 0)`);
+                    ambientContext.fillStyle = cursorGlow;
+                    ambientContext.fillRect(0, 0, canvasWidth, canvasHeight);
+                }
+                const linkDistance = 132;
+                const linkDistanceSquared = linkDistance * linkDistance;
+
+                particles.forEach((particle, index) => {
+                    if (delta > 0) {
+                        particle.x += particle.vx * delta;
+                        particle.y += particle.vy * delta;
+
+                        const pointerX = particle.x - pointer.x;
+                        const pointerY = particle.y - pointer.y;
+                        const pointerDistance = Math.hypot(pointerX, pointerY);
+                        if (pointerDistance < 115 && pointerDistance > 0) {
+                            const force = (115 - pointerDistance) / 115 * 0.012 * delta;
+                            particle.x += pointerX / pointerDistance * force;
+                            particle.y += pointerY / pointerDistance * force;
+                        }
+
+                        if (particle.x < -10) particle.x = canvasWidth + 10;
+                        if (particle.x > canvasWidth + 10) particle.x = -10;
+                        if (particle.y < -10) particle.y = canvasHeight + 10;
+                        if (particle.y > canvasHeight + 10) particle.y = -10;
+                    }
+
+                    for (let otherIndex = index + 1; otherIndex < particles.length; otherIndex += 1) {
+                        const other = particles[otherIndex];
+                        const dx = particle.x - other.x;
+                        const dy = particle.y - other.y;
+                        const distanceSquared = dx * dx + dy * dy;
+                        if (distanceSquared < linkDistanceSquared) {
+                            const opacity = (1 - distanceSquared / linkDistanceSquared) * colors.linkAlpha;
+                            ambientContext.strokeStyle = `rgba(${colors.link}, ${opacity})`;
+                            ambientContext.lineWidth = 1;
+                            ambientContext.beginPath();
+                            ambientContext.moveTo(particle.x, particle.y);
+                            ambientContext.lineTo(other.x, other.y);
+                            ambientContext.stroke();
+                        }
+                    }
+
+                    ambientContext.beginPath();
+                    ambientContext.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+                    ambientContext.fillStyle = `rgba(${colors.node}, ${colors.alpha})`;
+                    ambientContext.fill();
+                });
+            }
+
+            function animateAmbient(timestamp) {
+                animationFrame = 0;
+                if (document.hidden || reducedMotion.matches) return;
+                const delta = lastFrameTime ? Math.min((timestamp - lastFrameTime) / 16.67, 2) : 1;
+                lastFrameTime = timestamp;
+                drawAmbientFrame(delta);
+                animationFrame = window.requestAnimationFrame(animateAmbient);
+            }
+
+            function startAmbientAnimation() {
+                if (!animationFrame && !document.hidden && !reducedMotion.matches) {
+                    lastFrameTime = 0;
+                    animationFrame = window.requestAnimationFrame(animateAmbient);
+                }
+            }
+
+            function stopAmbientAnimation() {
+                if (animationFrame) window.cancelAnimationFrame(animationFrame);
+                animationFrame = 0;
+                lastFrameTime = 0;
+                drawAmbientFrame(0);
+            }
+
+            window.addEventListener('resize', resizeAmbientCanvas, { passive: true });
+            window.addEventListener('pointermove', event => {
+                pointer.x = event.clientX;
+                pointer.y = event.clientY;
+            }, { passive: true });
+            window.addEventListener('pointerleave', () => {
+                pointer.x = -1000;
+                pointer.y = -1000;
+            });
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) stopAmbientAnimation();
+                else startAmbientAnimation();
+            });
+            reducedMotion.addEventListener('change', () => {
+                if (reducedMotion.matches) stopAmbientAnimation();
+                else startAmbientAnimation();
+            });
+            setCanvasColors();
+            resizeAmbientCanvas();
+
+            const themeToggle = document.getElementById('themeToggleBtn');
+            themeToggle.addEventListener('click', setCanvasColors);
+        }
     </script>
 </body>
 </html>
