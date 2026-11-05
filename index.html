@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal HUB de Repaso Anual - 3.° Desarrollo de Software</title>
+    <meta name="theme-color" content="#0b0f19">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
     <!-- Google Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -130,6 +133,16 @@
 
         .search-bar input:focus {
             border-color: var(--accent-color);
+        }
+
+        .search-bar.shortcut-focus input {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.22);
+            animation: search-pulse 0.7s ease;
+        }
+
+        @keyframes search-pulse {
+            50% { box-shadow: 0 0 0 8px rgba(6, 182, 212, 0.12); }
         }
 
         .search-bar i {
@@ -362,9 +375,207 @@
             padding: 1.5rem;
         }
 
+        .feature-section {
+            width: 100%;
+            margin: 3rem 0;
+        }
+
+        .feature-intro {
+            color: var(--text-muted);
+            margin: -0.75rem 0 1.25rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .tech-cloud, .achievement-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .tech-badge {
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            padding: 0.65rem 1rem;
+            cursor: pointer;
+            font: inherit;
+            font-size: 0.9rem;
+        }
+
+        .tech-badge:hover, .tech-badge[aria-pressed="true"] {
+            border-color: var(--accent-color);
+            background: var(--badge-bg);
+            color: var(--accent-color);
+        }
+
+        .tech-badge:focus-visible, .flashcard-control:focus-visible,
+        .install-button:focus-visible, .achievement-card:focus-visible {
+            outline: 3px solid var(--accent-color);
+            outline-offset: 3px;
+        }
+
+        .timeline {
+            position: relative;
+            display: grid;
+            gap: 1rem;
+            padding-left: 1.5rem;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            top: 0.5rem;
+            bottom: 0.5rem;
+            left: 0.42rem;
+            width: 2px;
+            background: linear-gradient(var(--accent-color), #8b5cf6);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 1rem 1.2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--card-bg);
+            animation: timeline-arrive 0.6s both;
+        }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            top: 1.3rem;
+            left: -1.48rem;
+            width: 0.7rem;
+            height: 0.7rem;
+            border-radius: 50%;
+            background: var(--accent-color);
+            box-shadow: 0 0 0 4px var(--bg-color);
+        }
+
+        .timeline-item:nth-child(2) { animation-delay: 0.08s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.16s; }
+        .timeline-item:nth-child(4) { animation-delay: 0.24s; }
+        .timeline-item:nth-child(5) { animation-delay: 0.32s; }
+        .timeline-item:nth-child(6) { animation-delay: 0.4s; }
+
+        .timeline-item strong {
+            display: block;
+            margin-bottom: 0.3rem;
+            color: var(--accent-color);
+        }
+
+        .timeline-item p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        @keyframes timeline-arrive {
+            from { opacity: 0; transform: translateX(14px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .flashcard-shell {
+            width: 100%;
+            max-width: 680px;
+            height: 240px;
+            margin: 0 auto 1rem;
+            perspective: 1000px;
+        }
+
+        .flashcard {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease;
+            cursor: pointer;
+        }
+
+        .flashcard.is-flipped { transform: rotateY(180deg); }
+
+        .flashcard-face {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-content: center;
+            gap: 0.75rem;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            background: var(--card-bg);
+            text-align: center;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            box-shadow: 0 12px 30px rgba(2, 8, 23, 0.14);
+        }
+
+        .flashcard-face span {
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .flashcard-face p { line-height: 1.6; }
+        .flashcard-back { transform: rotateY(180deg); }
+
+        .flashcard-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .flashcard-control, .install-button {
+            border: 0;
+            border-radius: 8px;
+            background: var(--accent-color);
+            color: #fff;
+            cursor: pointer;
+            font: inherit;
+            font-weight: 600;
+            padding: 0.65rem 1rem;
+        }
+
+        .flashcard-control:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .flashcard-count, .pwa-status {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .achievement-card {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            min-width: 210px;
+            padding: 0.9rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--card-bg);
+            opacity: 0.6;
+        }
+
+        .achievement-card.unlocked {
+            opacity: 1;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 18px rgba(6, 182, 212, 0.12);
+        }
+
+        .achievement-icon { font-size: 1.6rem; }
+        .achievement-card strong, .achievement-card small { display: block; }
+        .achievement-card small { margin-top: 0.2rem; color: var(--text-muted); }
+
+        .install-button { position: absolute; top: 1.5rem; left: 1.5rem; }
+        .install-button[hidden] { display: none; }
+
         .filter-btn:focus-visible, .theme-toggle:focus-visible,
         .quiz-option-btn:focus-visible, .reset-progress:focus-visible,
-        .search-bar input:focus-visible {
+        .search-bar input:focus-visible, .flashcard:focus-visible {
             outline: 3px solid var(--accent-color);
             outline-offset: 3px;
         }
@@ -450,12 +661,17 @@
 
         @media (max-width: 640px) {
             header {
-                padding: 5rem 1rem 2rem;
+                padding: 6rem 1rem 2rem;
             }
 
             .theme-toggle {
-                top: 1rem;
+                top: 3.8rem;
                 right: 1rem;
+            }
+
+            .install-button {
+                top: 1rem;
+                left: 1rem;
             }
 
             h1 {
@@ -474,12 +690,26 @@
             .quiz-section {
                 padding: 1.25rem;
             }
+
+            .flashcard-shell { height: 270px; }
+            .flashcard-actions { gap: 0.5rem; }
+            .flashcard-control { padding: 0.6rem 0.75rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
 <body>
 
     <header>
+        <button class="install-button" id="installApp" type="button" hidden>Instalar app</button>
         <button class="theme-toggle" id="themeToggleBtn" type="button" aria-pressed="false">
             <i class="fa-solid fa-moon" id="themeIcon"></i> <span id="themeText">Modo Claro</span>
         </button>
@@ -502,6 +732,20 @@
                 <button class="filter-btn" type="button" data-filter="python" aria-pressed="false">Python & Odoo</button>
                 <button class="filter-btn" type="button" data-filter="canales" aria-pressed="false">Prof. Arcides Canales</button>
             </div>
+            <section class="feature-section" aria-labelledby="techTitle">
+                <h2 class="section-title" id="techTitle"><i class="fa-solid fa-tags"></i> Nube de tecnologías</h2>
+                <p class="feature-intro">Selecciona una tecnología para ver los módulos relacionados. Vuelve a pulsarla para quitar el filtro.</p>
+                <div class="tech-cloud" id="techCloud" aria-label="Filtrar por tecnología">
+                    <button class="tech-badge" type="button" data-tech="python" aria-pressed="false">Python</button>
+                    <button class="tech-badge" type="button" data-tech="sql-server" aria-pressed="false">SQL Server</button>
+                    <button class="tech-badge" type="button" data-tech="git" aria-pressed="false">Git</button>
+                    <button class="tech-badge" type="button" data-tech="odoo" aria-pressed="false">Odoo</button>
+                    <button class="tech-badge" type="button" data-tech="power-bi" aria-pressed="false">Power BI</button>
+                    <button class="tech-badge" type="button" data-tech="c-sharp" aria-pressed="false">C#</button>
+                    <button class="tech-badge" type="button" data-tech="itil-4" aria-pressed="false">ITIL 4</button>
+                    <button class="tech-badge" type="button" data-tech="html-css" aria-pressed="false">HTML/CSS</button>
+                </div>
+            </section>
             <div class="progress-panel" aria-label="Progreso del repaso">
                 <div class="progress-panel-header">
                     <span><strong id="progressSummary">0 de 0 temas completados</strong></span>
@@ -545,7 +789,7 @@
             </div>
 
             <!-- Módulo 3.2 -->
-            <div class="card" data-tags="operacion soporte itil sdlc sla mineros">
+            <div class="card" data-tags="operacion soporte itil sdlc sla mineros" data-tech="git itil-4">
                 <div>
                     <div class="card-header">
                         <h3>Módulo 3.2 · Mantenimiento y Operación de Sistemas</h3>
@@ -579,7 +823,7 @@
             </div>
 
             <!-- Módulo 3.3 -->
-            <div class="card" data-tags="datos bases de datos sql powerbi excel mineros">
+            <div class="card" data-tags="datos bases de datos sql powerbi excel mineros" data-tech="sql-server power-bi">
                 <div>
                     <div class="card-header">
                         <h3>Módulo 3.3 · Administración de Bases de Datos</h3>
@@ -603,7 +847,7 @@
             </div>
 
             <!-- Módulo 3.4 (NUEVO: Integrado según tus evidencias de tareas y entregas) -->
-            <div class="card" data-tags="python odoo documentos erp fases">
+            <div class="card" data-tags="python odoo documentos erp fases" data-tech="python odoo">
                 <div>
                     <div class="card-header">
                         <h3>Módulo 3.4 · Elaboración de documentación y Apps en Python</h3>
@@ -636,7 +880,7 @@
             </div>
 
             <!-- Módulo 3.8 -->
-            <div class="card" data-tags="proyecto innovador canales manual exposiciones avances vscode git github documentacion metodologias-agiles">
+            <div class="card" data-tags="proyecto innovador canales manual exposiciones avances vscode git github documentacion metodologias-agiles" data-tech="git">
                 <div>
                     <div class="card-header">
                         <h3>Módulo 3.8 · Proyecto Innovador de Desarrollo de Software</h3>
@@ -663,7 +907,66 @@
                 </div>
             </div>
 
+            <!-- Cierre 3.9: la descripción se mantiene general hasta contar con el detalle curricular. -->
+            <div class="card" data-tags="proyecto desarrollo integracion cierre entrega final" data-tech="c-sharp html-css">
+                <div>
+                    <div class="card-header">
+                        <h3>Módulo 3.9 · Integración y Entrega Final</h3>
+                        <span class="prof-badge"><i class="fa-solid fa-flag-checkered"></i> Cierre del año</span>
+                    </div>
+                    <p>Etapa de consolidación, revisión e integración de los productos del año y preparación de las entregas finales.</p>
+                </div>
+                <div>
+                    <div class="tools-box">
+                        <strong>Tecnologías de repaso:</strong> C#, HTML y CSS
+                    </div>
+                    <label class="progress-check">
+                        <input type="checkbox" data-id="mod-3.9"> Marcar módulo como completado
+                    </label>
+                </div>
+            </div>
+
         </div>
+
+        <section class="feature-section" aria-labelledby="timelineTitle">
+            <h2 class="section-title" id="timelineTitle"><i class="fa-solid fa-timeline"></i> Línea de tiempo del año</h2>
+            <div class="timeline">
+                <article class="timeline-item"><strong>Módulo 3.0 · Inicio</strong><p>Conformación de equipos, organización del trabajo y creación del portafolio digital.</p></article>
+                <article class="timeline-item"><strong>Módulo 3.2 · Operación</strong><p>Servicios de TI, prácticas ITIL 4, acuerdos SLA y ciclo de vida del software.</p></article>
+                <article class="timeline-item"><strong>Módulo 3.3 · Datos</strong><p>Administración de bases de datos, consultas SQL y visualización con Power BI.</p></article>
+                <article class="timeline-item"><strong>Módulo 3.4 · Desarrollo</strong><p>Aplicaciones con Python, ERP Odoo y documentación técnica por fases.</p></article>
+                <article class="timeline-item"><strong>Módulo 3.8 · Proyecto innovador</strong><p>Avances, documentación, manuales, exposición y preparación de entregas.</p></article>
+                <article class="timeline-item"><strong>Módulo 3.9 · Cierre</strong><p>Integración de productos, revisión final y entrega de los trabajos del año.</p></article>
+            </div>
+        </section>
+
+        <section class="feature-section" aria-labelledby="flashcardsTitle">
+            <h2 class="section-title" id="flashcardsTitle"><i class="fa-solid fa-clone"></i> Flashcards de repaso</h2>
+            <p class="feature-intro">Pulsa la tarjeta o usa Enter/Espacio para revelar el concepto.</p>
+            <div class="flashcard-shell">
+                <div class="flashcard" id="flashcard" role="button" tabindex="0" aria-label="Mostrar respuesta de la tarjeta">
+                    <div class="flashcard-face">
+                        <span id="flashcardModule"></span>
+                        <p id="flashcardQuestion"></p>
+                    </div>
+                    <div class="flashcard-face flashcard-back" aria-hidden="true">
+                        <span>Concepto</span>
+                        <p id="flashcardAnswer"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="flashcard-actions">
+                <button class="flashcard-control" id="flashcardPrev" type="button">Anterior</button>
+                <span class="flashcard-count" id="flashcardCount" aria-live="polite"></span>
+                <button class="flashcard-control" id="flashcardNext" type="button">Siguiente</button>
+            </div>
+        </section>
+
+        <section class="feature-section" aria-labelledby="achievementsTitle">
+            <h2 class="section-title" id="achievementsTitle"><i class="fa-solid fa-award"></i> Logros e insignias</h2>
+            <p class="feature-intro">Se desbloquean al completar módulos o responder correctamente preguntas del quiz.</p>
+            <div class="achievement-list" id="achievementList" aria-live="polite"></div>
+        </section>
 
         <!-- Quiz Interactivo Pro -->
         <div class="section-title">
@@ -675,6 +978,7 @@
             <div class="quiz-feedback" id="quizFeedback" role="status" aria-live="polite"></div>
             <button class="quiz-next" id="quizNext" type="button" hidden>Siguiente pregunta</button>
         </div>
+        <p class="pwa-status" id="pwaStatus" role="status" aria-live="polite"></p>
 
     </div>
 
@@ -713,20 +1017,82 @@
                 ],
                 answer: 1,
                 explanation: 'El SDLC organiza las fases de desarrollo, desde la planificación y análisis hasta las pruebas y mantenimiento.'
+            },
+            {
+                question: '¿Qué lenguaje se usa para desarrollar aplicaciones en el Módulo 3.4?',
+                options: ['Python', 'SQL', 'HTML'],
+                answer: 0,
+                explanation: 'Python se utiliza para crear aplicaciones y trabajar con la integración del ERP Odoo.',
+                achievement: 'python'
             }
+        ];
+
+        const flashcards = [
+            { module: 'Módulo 3.0 · Orientación', question: '¿Qué aporta la conformación de equipos al trabajo del año?', answer: 'Distribuye responsabilidades y facilita la colaboración y el seguimiento de proyectos.' },
+            { module: 'Módulo 3.2 · Operación', question: '¿Qué es ITIL 4?', answer: 'Un marco de buenas prácticas para la gestión de servicios de tecnologías de información.' },
+            { module: 'Módulo 3.2 · Operación', question: '¿Qué documenta un SLA?', answer: 'Los niveles de servicio, métricas y responsabilidades acordadas entre proveedor y cliente.' },
+            { module: 'Módulo 3.2 · Operación', question: '¿Qué representa el SDLC?', answer: 'Las etapas del ciclo de vida del desarrollo de software, desde la planificación hasta el mantenimiento.' },
+            { module: 'Módulo 3.3 · Datos', question: '¿Para qué se usa SQL Server?', answer: 'Para administrar bases de datos relacionales y consultar sus datos mediante SQL.' },
+            { module: 'Módulo 3.3 · Datos', question: '¿Qué permite Power BI?', answer: 'Analizar datos y presentarlos en informes y paneles visuales interactivos.' },
+            { module: 'Módulo 3.4 · Desarrollo', question: '¿Qué es Odoo?', answer: 'Una plataforma ERP que integra aplicaciones para gestionar procesos de una organización.' },
+            { module: 'Módulos 3.8 y 3.9 · Entregas', question: '¿Qué debe contemplar una entrega final de software?', answer: 'El producto integrado, su documentación y la revisión de los requisitos y entregables acordados.' }
+        ];
+
+        const achievements = [
+            { id: 'pioneer', icon: '🚀', title: 'Pionero del Repaso', detail: 'Completaste un tema o acertaste una pregunta.' },
+            { id: 'itil', icon: '🛡️', title: 'Maestro de ITIL', detail: 'Respondiste correctamente la pregunta de ITIL 4.' },
+            { id: 'python', icon: '🐍', title: 'Desarrollador Python', detail: 'Completaste el Módulo 3.4 o acertaste la pregunta de Python.' }
         ];
 
         const searchInput = document.getElementById('searchInput');
         const cards = [...document.querySelectorAll('.modules-grid .card')];
         const filterButtons = [...document.querySelectorAll('.filter-btn')];
+        const technologyButtons = [...document.querySelectorAll('.tech-badge')];
         const progressInputs = [...document.querySelectorAll('.progress-check input[data-id]')];
         let activeFilter = 'todos';
+        let activeTechnology = null;
         let quizIndex = 0;
         let quizScore = 0;
         let answered = false;
+        let installPromptEvent = null;
 
         function normalizeText(value) {
             return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es');
+        }
+
+        function unlockAchievement(id) {
+            if (localStorage.getItem(`achievement_${id}`) === 'true') return;
+            localStorage.setItem(`achievement_${id}`, 'true');
+        }
+
+        function updateAchievements() {
+            const completedModuleIds = ['mod-3.4'];
+            if (progressInputs.some(input => input.checked)) unlockAchievement('pioneer');
+            if (completedModuleIds.some(id => progressInputs.some(input => input.dataset.id === id && input.checked))) {
+                unlockAchievement('python');
+            }
+
+            const achievementList = document.getElementById('achievementList');
+            achievementList.replaceChildren();
+            achievements.forEach(achievement => {
+                const unlocked = localStorage.getItem(`achievement_${achievement.id}`) === 'true';
+                const item = document.createElement('div');
+                item.className = `achievement-card${unlocked ? ' unlocked' : ''}`;
+                item.setAttribute('aria-label', `${achievement.title}: ${unlocked ? 'desbloqueada' : 'bloqueada'}`);
+
+                const icon = document.createElement('span');
+                icon.className = 'achievement-icon';
+                icon.setAttribute('aria-hidden', 'true');
+                icon.textContent = unlocked ? achievement.icon : '🔒';
+                const content = document.createElement('span');
+                const title = document.createElement('strong');
+                title.textContent = achievement.title;
+                const detail = document.createElement('small');
+                detail.textContent = unlocked ? achievement.detail : 'Insignia bloqueada';
+                content.append(title, detail);
+                item.append(icon, content);
+                achievementList.append(item);
+            });
         }
 
         function updateThemeButton(theme) {
@@ -745,13 +1111,17 @@
                 const matchesQuery = normalizeText(searchableText).includes(query);
                 const tags = card.dataset.tags.split(/\s+/);
                 const matchesFilter = activeFilter === 'todos' || tags.includes(activeFilter);
-                const visible = matchesQuery && matchesFilter;
+                const technologies = (card.dataset.tech || '').split(/\s+/);
+                const matchesTechnology = !activeTechnology || technologies.includes(activeTechnology);
+                const visible = matchesQuery && matchesFilter && matchesTechnology;
                 card.style.display = visible ? 'flex' : 'none';
                 visibleCount += Number(visible);
             });
 
             document.getElementById('resultsCount').textContent =
-                visibleCount ? `${visibleCount} ${visibleCount === 1 ? 'módulo encontrado' : 'módulos encontrados'}` : '';
+                visibleCount
+                    ? `${visibleCount} ${visibleCount === 1 ? 'módulo encontrado' : 'módulos encontrados'}${activeTechnology ? ` · ${technologyButtons.find(button => button.dataset.tech === activeTechnology).textContent}` : ''}`
+                    : '';
             let emptyState = document.getElementById('emptyState');
             if (!visibleCount && !emptyState) {
                 emptyState = document.createElement('p');
@@ -771,6 +1141,29 @@
             document.getElementById('progressSummary').textContent = `${completed} de ${total} temas completados · ${percentage}%`;
             document.getElementById('progressBar').style.width = `${percentage}%`;
             document.querySelector('.progress-track').setAttribute('aria-valuenow', String(percentage));
+            updateAchievements();
+        }
+
+        function renderFlashcard() {
+            const card = flashcards[flashcardIndex];
+            document.getElementById('flashcard').classList.remove('is-flipped');
+            document.getElementById('flashcard').setAttribute('aria-label', 'Mostrar respuesta de la tarjeta');
+            document.querySelector('.flashcard-face:not(.flashcard-back)').setAttribute('aria-hidden', 'false');
+            document.querySelector('.flashcard-back').setAttribute('aria-hidden', 'true');
+            document.getElementById('flashcardModule').textContent = card.module;
+            document.getElementById('flashcardQuestion').textContent = card.question;
+            document.getElementById('flashcardAnswer').textContent = card.answer;
+            document.getElementById('flashcardCount').textContent = `Tarjeta ${flashcardIndex + 1} de ${flashcards.length}`;
+            document.getElementById('flashcardPrev').disabled = flashcardIndex === 0;
+            document.getElementById('flashcardNext').disabled = flashcardIndex === flashcards.length - 1;
+        }
+
+        function flipFlashcard() {
+            const flashcard = document.getElementById('flashcard');
+            const isFlipped = flashcard.classList.toggle('is-flipped');
+            flashcard.setAttribute('aria-label', isFlipped ? 'Mostrar pregunta de la tarjeta' : 'Mostrar respuesta de la tarjeta');
+            document.querySelector('.flashcard-face:not(.flashcard-back)').setAttribute('aria-hidden', String(isFlipped));
+            document.querySelector('.flashcard-back').setAttribute('aria-hidden', String(!isFlipped));
         }
 
         function renderQuestion() {
@@ -805,7 +1198,13 @@
             });
 
             const isCorrect = selectedIndex === question.answer;
-            if (isCorrect) quizScore += 1;
+            if (isCorrect) {
+                quizScore += 1;
+                unlockAchievement('pioneer');
+                if (question.achievement) unlockAchievement(question.achievement);
+                if (question.question.includes('ITIL')) unlockAchievement('itil');
+                updateAchievements();
+            }
             document.getElementById('quizFeedback').textContent =
                 `${isCorrect ? '¡Correcto!' : 'No exactamente.'} ${question.explanation} Puntaje: ${quizScore}/${quizIndex + 1}.`;
             document.getElementById('quizNext').textContent =
@@ -824,6 +1223,8 @@
         searchInput.addEventListener('input', updateFilters);
         filterButtons.forEach(button => {
             button.addEventListener('click', () => {
+                activeTechnology = null;
+                technologyButtons.forEach(techButton => techButton.setAttribute('aria-pressed', 'false'));
                 activeFilter = button.dataset.filter;
                 filterButtons.forEach(filterButton => {
                     const isActive = filterButton === button;
@@ -831,6 +1232,25 @@
                     filterButton.setAttribute('aria-pressed', String(isActive));
                 });
                 updateFilters();
+            });
+        });
+
+        technologyButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const isSelected = activeTechnology === button.dataset.tech;
+                activeTechnology = isSelected ? null : button.dataset.tech;
+                searchInput.value = '';
+                activeFilter = 'todos';
+                filterButtons.forEach(filterButton => {
+                    const isAll = filterButton.dataset.filter === 'todos';
+                    filterButton.classList.toggle('active', isAll);
+                    filterButton.setAttribute('aria-pressed', String(isAll));
+                });
+                technologyButtons.forEach(techButton => {
+                    techButton.setAttribute('aria-pressed', String(techButton === button && !isSelected));
+                });
+                updateFilters();
+                document.getElementById('modulesGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         });
 
@@ -852,6 +1272,67 @@
             updateProgress();
         });
 
+        let flashcardIndex = 0;
+        document.getElementById('flashcardPrev').addEventListener('click', () => {
+            if (flashcardIndex > 0) flashcardIndex -= 1;
+            renderFlashcard();
+        });
+        document.getElementById('flashcardNext').addEventListener('click', () => {
+            if (flashcardIndex < flashcards.length - 1) flashcardIndex += 1;
+            renderFlashcard();
+        });
+        document.getElementById('flashcard').addEventListener('click', flipFlashcard);
+        document.getElementById('flashcard').addEventListener('keydown', event => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                flipFlashcard();
+            }
+        });
+
+        document.addEventListener('keydown', event => {
+            const isTyping = event.target instanceof HTMLElement &&
+                (event.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(event.target.tagName));
+            const isSearchShortcut = (event.key === '/' && !event.ctrlKey && !event.metaKey && !event.altKey && !isTyping) ||
+                ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k');
+            if (!isSearchShortcut) return;
+            event.preventDefault();
+            searchInput.focus();
+            searchInput.select();
+            const searchBar = searchInput.closest('.search-bar');
+            searchBar.classList.remove('shortcut-focus');
+            requestAnimationFrame(() => searchBar.classList.add('shortcut-focus'));
+            window.setTimeout(() => searchBar.classList.remove('shortcut-focus'), 800);
+        });
+
+        const installButton = document.getElementById('installApp');
+        const pwaStatus = document.getElementById('pwaStatus');
+        if ('serviceWorker' in navigator && window.location.protocol !== 'file:') {
+            navigator.serviceWorker.register('./sw.js')
+                .then(() => { pwaStatus.textContent = 'Modo sin conexión disponible después de la primera carga.'; })
+                .catch(error => {
+                    pwaStatus.textContent = `No se pudo activar el modo sin conexión: ${error.message}`;
+                });
+        } else {
+            pwaStatus.textContent = 'Para instalar la app y usarla sin conexión, abre este sitio mediante HTTPS o localhost.';
+        }
+
+        window.addEventListener('beforeinstallprompt', event => {
+            event.preventDefault();
+            installPromptEvent = event;
+            installButton.hidden = false;
+        });
+        installButton.addEventListener('click', async () => {
+            if (!installPromptEvent) return;
+            installPromptEvent.prompt();
+            await installPromptEvent.userChoice;
+            installPromptEvent = null;
+            installButton.hidden = true;
+        });
+        window.addEventListener('appinstalled', () => {
+            installButton.hidden = true;
+            pwaStatus.textContent = 'Portal instalado correctamente.';
+        });
+
         document.getElementById('quizNext').addEventListener('click', () => {
             if (quizIndex === quizQuestions.length - 1) {
                 quizIndex = 0;
@@ -869,6 +1350,8 @@
         updateThemeButton(document.documentElement.dataset.theme);
         updateFilters();
         updateProgress();
+        updateAchievements();
+        renderFlashcard();
         renderQuestion();
     </script>
 </body>
